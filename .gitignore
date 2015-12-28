@@ -1,0 +1,15 @@
+.metadata
+target
+.MF
+.svn
+.settings
+.lst
+.classpath
+.project
+.DS_STORE
+.class
+jaxb
+bin
+/build.txt
+.vagrant
+*~
