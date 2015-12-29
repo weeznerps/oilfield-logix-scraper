@@ -1,7 +1,9 @@
 package com.oilfield.logix.crawler;
 
 /**
- * Created by js028708 on 12/28/15.
+ *
+ *
+ * @author Jordan Sanderson
  */
 public class Config {
 

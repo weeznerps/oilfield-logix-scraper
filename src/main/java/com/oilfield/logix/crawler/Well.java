@@ -1,10 +1,5 @@
 package com.oilfield.logix.crawler;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 /**
  * Object representing wells
  *
@@ -13,20 +8,21 @@ import java.util.Optional;
 public class Well {
 
     private int id;
-    private String operaterName,fieldName,leaseName,rrcGasId,wellNumber,apiNo,rrcDistrictNo,completionType,wellType,county,drillingPermitNumber,wellBoreProfile,fieldNumber;
-    private LocalDate submissionDate, approvalDate, completionDate;
-    private List<Form> forms;
+    private String operaterName,fieldName,leaseName,rrcGasId,wellNumber,apiNo,rrcDistrictNo,completionType,
+        wellType,county,drillingPermitNumber,wellBoreProfile,fieldNumber,filingPurpose, submissionDate, approvalDate,
+            completionDate, w2Date, w15Date, l1HeaderDate, directionalSurveyMWDDate, directionSurveyGyroDate;
 
-    public Well(int id, String operaterName, String fieldName, String leaseName, String rrcGasId, String rrcDistrictNo,
-                String wellNumber, String apiNo, LocalDate submissionDate, LocalDate approvalDate,
-                LocalDate completionDate, String completionType,
-            String wellType, String county, String drillingPermitNumber, String wellBoreProfile,
-            String fieldNumber) {
+    public Well(int id, String approvalDate, String operaterName, String completionType,
+            String fieldName, String completionDate, String leaseName, String filingPurpose,
+            String rrcDistrictNo, String wellType, String rrcGasId, String county,
+            String wellNumber, String drillingPermitNumber, String apiNo, String wellBoreProfile,
+                String submissionDate, String fieldNumber) {
         this.id = id;
         this.operaterName = operaterName;
         this.fieldName = fieldName;
         this.leaseName = leaseName;
         this.rrcGasId = rrcGasId;
+        this.filingPurpose = filingPurpose;
         this.wellNumber = wellNumber;
         this.apiNo = apiNo;
         this.rrcDistrictNo = rrcDistrictNo;
@@ -39,15 +35,38 @@ public class Well {
         this.submissionDate = submissionDate;
         this.approvalDate = approvalDate;
         this.completionDate = completionDate;
-        this.forms = new ArrayList<>();
     }
 
-    public List<Form> getForms() {
-        return forms;
-    }
+    public Well(int id, String approvalDate, String operaterName, String completionType,
+                String fieldName, String completionDate, String leaseName, String filingPurpose,
+                String rrcDistrictNo, String wellType, String rrcGasId, String county,
+                String wellNumber, String drillingPermitNumber, String apiNo, String wellBoreProfile,
+            String submissionDate, String fieldNumber, String w2Date, String w15Date,
+            String l1HeaderDate, String directionalSurveyMWDDate, String directionSurveyGyroDate) {
+        this.id = id;
+        this.operaterName = operaterName;
+        this.fieldName = fieldName;
+        this.leaseName = leaseName;
+        this.rrcGasId = rrcGasId;
+        this.filingPurpose = filingPurpose;
+        this.wellNumber = wellNumber;
+        this.apiNo = apiNo;
+        this.rrcDistrictNo = rrcDistrictNo;
+        this.completionType = completionType;
+        this.wellType = wellType;
+        this.county = county;
+        this.drillingPermitNumber = drillingPermitNumber;
+        this.wellBoreProfile = wellBoreProfile;
+        this.fieldNumber = fieldNumber;
+        this.submissionDate = submissionDate;
+        this.approvalDate = approvalDate;
+        this.completionDate = completionDate;
+        this.w2Date = w2Date;
+        this.w15Date = w15Date;
+        this.l1HeaderDate = l1HeaderDate;
+        this.directionalSurveyMWDDate = directionalSurveyMWDDate;
+        this.directionSurveyGyroDate = directionSurveyGyroDate;
 
-    public void setForms(List<Form> forms) {
-        this.forms = forms;
     }
 
     public int getId() {
@@ -78,15 +97,15 @@ public class Well {
         return wellBoreProfile;
     }
 
-    public LocalDate getSubmissionDate() {
+    public String getSubmissionDate() {
         return submissionDate;
     }
 
-    public LocalDate getApprovalDate() {
+    public String getApprovalDate() {
         return approvalDate;
     }
 
-    public LocalDate getCompletionDate() {
+    public String getCompletionDate() {
         return completionDate;
     }
 
@@ -118,60 +137,82 @@ public class Well {
         return fieldNumber;
     }
 
+    public String getFilingPurpose() {
+        return filingPurpose;
+    }
+
+    public String getW2Date() {
+        return w2Date == null ? "null" : w2Date;
+    }
+
+    public String getL1HeaderDate() {
+        return l1HeaderDate == null ? "null" : l1HeaderDate;
+    }
+
+    public void setL1HeaderDate(String l1HeaderDate) {
+        this.l1HeaderDate = l1HeaderDate;
+    }
+
+    public void setW2Date(String w2Date) {
+        this.w2Date = w2Date;
+    }
+
+    public String getW15Date() {
+        return w15Date == null ? "null" : w15Date;
+    }
+
+    public void setW15Date(String w15Date) {
+        this.w15Date = w15Date;
+    }
+
+    public String getDirectionalSurveyMWDDate() {
+        return directionalSurveyMWDDate == null ? "null" : directionalSurveyMWDDate;
+    }
+
+    public void setDirectionalSurveyMWDDate(String directionalSurveyMWDDate) {
+        this.directionalSurveyMWDDate = directionalSurveyMWDDate;
+    }
+
+    public String getDirectionSurveyGyroDate() {
+        return directionSurveyGyroDate == null ? "null" : directionSurveyGyroDate;
+    }
+
+    public void setDirectionSurveyGyroDate(String directionSurveyGyroDate) {
+        this.directionSurveyGyroDate = directionSurveyGyroDate;
+    }
+
+
 
     public String[] asCsvEntry() {
-        String[] entry = {String.valueOf(id),operaterName, fieldName, leaseName, rrcGasId, rrcDistrictNo, wellNumber, apiNo,
-                submissionDate.toString(), approvalDate.toString(), completionDate.toString(),
-                completionType, wellType, county, drillingPermitNumber, wellBoreProfile, fieldNumber
-                };
+        String[] entry = {String.valueOf(id), approvalDate, operaterName, completionType,
+                fieldName, completionDate, leaseName, filingPurpose,
+                rrcDistrictNo, wellType, rrcGasId, county,
+                wellNumber, drillingPermitNumber, apiNo, wellBoreProfile,
+                submissionDate, fieldNumber, getW2Date(), getW15Date(), getL1HeaderDate(), getDirectionalSurveyMWDDate(), getDirectionSurveyGyroDate()
+        };
         return entry;
     }
 
-    public static class Form {
-        private String type;
+    public enum Forms {
+        W2("W-2"), G2("G-2"), W15("W-15"), L1HEADER("L-1 Header"), DIRECTIONAL_SURVEY_MWD(
+                "Directional Survey - MWD"), DIRECTIONAL_SURVEY_GYRO("Directional Survey - Gyro");
 
-        public void setCreation(LocalDate creation) {
-            this.creation = creation;
-        }
+        public String type;
 
-        public void setCertification(Optional<LocalDate> certification) {
-            this.certification = certification;
-        }
-
-        private LocalDate creation;
-        private Optional<LocalDate> certification;
-
-        public Form(String type, LocalDate creation) {
+        Forms(String type) {
             this.type = type;
-            this.creation = creation;
-            this.certification = Optional.empty();
         }
 
-        public Form(String type, LocalDate creation, Optional<LocalDate> certification) {
-            this.type = type;
-            this.creation = creation;
-            this.certification = certification;
-        }
-
-        public boolean isCertified() {
-            return this.certification.isPresent();
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public LocalDate getCreation() {
-            return creation;
-        }
-
-        public Optional<LocalDate> getCertification() {
-            return certification;
-        }
-
-        public String[] asCsvEntry() {
-            String[] entry = {type,creation.toString(),certification.isPresent() ? "null" : certification.get().toString()};
-            return entry;
+        //From String method will return you the Enum for the provided input string
+        public static Forms fromString(String parameterName) {
+            if (parameterName != null) {
+                for (Forms objType : Forms.values()) {
+                    if (parameterName.equalsIgnoreCase(objType.type)) {
+                        return objType;
+                    }
+                }
+            }
+            return null;
         }
     }
 }
