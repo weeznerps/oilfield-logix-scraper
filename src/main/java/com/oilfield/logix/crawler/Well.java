@@ -119,8 +119,25 @@ public class Well {
     }
 
 
+    public String[] asCsvEntry() {
+        String[] entry = {String.valueOf(id),operaterName, fieldName, leaseName, rrcGasId, rrcDistrictNo, wellNumber, apiNo,
+                submissionDate.toString(), approvalDate.toString(), completionDate.toString(),
+                completionType, wellType, county, drillingPermitNumber, wellBoreProfile, fieldNumber
+                };
+        return entry;
+    }
+
     public static class Form {
         private String type;
+
+        public void setCreation(LocalDate creation) {
+            this.creation = creation;
+        }
+
+        public void setCertification(Optional<LocalDate> certification) {
+            this.certification = certification;
+        }
+
         private LocalDate creation;
         private Optional<LocalDate> certification;
 
@@ -130,10 +147,10 @@ public class Well {
             this.certification = Optional.empty();
         }
 
-        public Form(String type, LocalDate creation, LocalDate certification) {
+        public Form(String type, LocalDate creation, Optional<LocalDate> certification) {
             this.type = type;
             this.creation = creation;
-            this.certification = Optional.of(certification);
+            this.certification = certification;
         }
 
         public boolean isCertified() {
@@ -146,6 +163,15 @@ public class Well {
 
         public LocalDate getCreation() {
             return creation;
+        }
+
+        public Optional<LocalDate> getCertification() {
+            return certification;
+        }
+
+        public String[] asCsvEntry() {
+            String[] entry = {type,creation.toString(),certification.isPresent() ? "null" : certification.get().toString()};
+            return entry;
         }
     }
 }

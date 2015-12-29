@@ -1,0 +1,37 @@
+<assembly
+        xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+    <id>assembly</id>
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <dependencySets>
+        <dependencySet>
+            <scope>runtime</scope>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
+            <useProjectArtifact>true</useProjectArtifact>
+            <outputDirectory>/jars</outputDirectory>
+            <fileMode>544</fileMode>
+        </dependencySet>
+    </dependencySets>
+    <fileSets>
+        <fileSet>
+            <outputDirectory>/properties</outputDirectory>
+            <directory>${project.build.directory}/classes</directory>
+            <includes>
+                <include>**/*.properties</include>
+                <include>**/*.json</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <outputDirectory>/</outputDirectory>
+            <directory>${project.build.directory}/classes</directory>
+            <fileMode>777</fileMode>
+            <includes>
+                <include>**/*.sh</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+</assembly>

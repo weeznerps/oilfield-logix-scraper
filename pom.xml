@@ -139,7 +139,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>com.oilfield.logix.MainClass</mainClass>
+                            <mainClass>com.oilfield.logix.crawler.MainClass</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -148,8 +148,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
-                    <descriptor>src/main/etc/test-assembly.xml</descriptor>
-                    <finalName>mop-test-assembly-${project.version}</finalName>
+                    <descriptor>src/main/etc/assembly.xml</descriptor>
+                    <finalName>crawler-assembly-${project.version}</finalName>
                 </configuration>
                 <executions>
                     <execution>
