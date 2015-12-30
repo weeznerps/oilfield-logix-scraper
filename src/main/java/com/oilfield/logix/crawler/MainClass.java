@@ -81,7 +81,7 @@ public class MainClass {
         csvReader.close();
 
         for (String[] line : csvLines) {
-            if(line[0].equals("id"))
+            if(line[0].equals("id") || line.length != 23)
                 continue;
 
             wells.add(new Well(Integer.valueOf(line[0]), line[1], line[2], line[3], line[4],
@@ -239,7 +239,7 @@ public class MainClass {
          * coming up against the max records limit. Just in case this limit is exceeded just in one
          * day, records are then broken down by date
          */
-        for(int i = 0; i < ChronoUnit.DAYS.between(LocalDate.parse(config.getBeginDate()), LocalDate.parse(config.getEndDate())) - 1; i++) {
+        for(int i = 0; i < ChronoUnit.DAYS.between(LocalDate.parse(config.getBeginDate()), LocalDate.parse(config.getEndDate())); i++) {
             String beginDate = dateFormatter.format(LocalDate.parse(config.getBeginDate()).plusDays(i)).replace("-", "/");
             String endDate = dateFormatter.format(LocalDate.parse(config.getBeginDate()).plusDays(i+1)).replace("-", "/");
             String responseString = getIdsResponseString(beginDate, endDate, null);
