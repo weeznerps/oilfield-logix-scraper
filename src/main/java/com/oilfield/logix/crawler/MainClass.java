@@ -78,9 +78,10 @@ public class MainClass {
     public static void populateOldWells() throws IOException {
         CSVReader csvReader = new CSVReader(new FileReader(oldWellsFilePath));
         List<String[]> csvLines = csvReader.readAll();
+        csvReader.close();
 
         for (String[] line : csvLines) {
-            if(!line[0].equals("id"))
+            if(line[0].equals("id"))
                 continue;
 
             wells.add(new Well(Integer.valueOf(line[0]), line[1], line[2], line[3], line[4],
@@ -219,10 +220,12 @@ public class MainClass {
         CSVWriter csvWellWriter = new CSVWriter(new FileWriter(new File("newWells.csv")));
         csvWellWriter.writeNext(("id,approvalDate,operaterName,completionType,fieldName,completionDate,leaseName," +
                 "filingPurpose,rrcDistrictNo,wellType,rrcGasId,county,wellNumber,drillingPermitNumber,apiNo," +
-                "wellBoreProfilesubmissionDate,fieldNumber,w2Date,w15Datel1HeaderDate,directionalSurveyMWDDate,directionSurveyGyroDate").split(","));
+                "wellBoreProfile,submissionDate,fieldNumber,w2Date,w15Date,l1HeaderDate,directionalSurveyMWDDate,directionSurveyGyroDate").split(","));
         for(Well well : wells) {
             csvWellWriter.writeNext(well.asCsvEntry());
         }
+        csvWellWriter.flush();
+        csvWellWriter.close();
     }
 
     public static Set<Integer> getIdList()
@@ -279,7 +282,7 @@ public class MainClass {
             try {
                 ids.add(Integer.valueOf(element.text().trim()));
             } catch (NumberFormatException e) {
-                LOGGER.warn(e);
+                LOGGER.info(e);
             }
         });
         return ids;

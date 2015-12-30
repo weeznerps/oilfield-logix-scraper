@@ -4,10 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.oilefield.logix</groupId>
-    <artifactId>oilfield-logix-webcrawler</artifactId>
+    <artifactId>oilfield-logix-scraper</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>Oilfield Database Crawler</name>
+    <name>Oilfield scraper</name>
     <description>Collects data from Texas oilfield database</description>
     <properties>
         <!-- JDK -->

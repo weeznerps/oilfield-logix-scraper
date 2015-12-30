@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
@@ -18,8 +19,11 @@ import com.oilfield.logix.crawler.MainClass;
 
 /**
  * Rate limited {@link HttpClient} to get around dumb rate limiting from the site. Has retry logic.
- * It seems you are allowed roughly 16 requests/min per session, so 4 seconds divided by the number of sessions is the limit.
- * Sessions are switched on a round robin basis
+ * It seems you are allowed roughly 16 requests/min per session, so 4 seconds divided by the number
+ * of sessions is the limit. Sessions per hour are limited and sessions expire quickly. The max
+ * number of concurrent max-rate sessions allowed is 3. Sessions are switched on a round robin
+ * basis.
+ *
  * @author Jordan Sanderson
  */
 public class RateLimitedHttpClient {
@@ -32,11 +36,15 @@ public class RateLimitedHttpClient {
 
     private CloseableHttpClient httpClient;
     private List<HttpClientContext> contexts;
-    private static int NUM_CONTEXTS = 5;
+    private static int NUM_CONTEXTS = 3;
     private static int CURRENT_CONTEXT = 0;
+    private static int MAX_RETRIES = 15;
 
     public RateLimitedHttpClient() {
-        this.httpClient = HttpClientBuilder.create().build();
+        this.httpClient = HttpClientBuilder
+                .create()
+                .setDefaultRequestConfig(
+                        RequestConfig.custom().setConnectionRequestTimeout(4000).build()).build();
         contexts = new ArrayList<>();
         for(int i= 0; i < NUM_CONTEXTS; i++) {
             HttpClientContext context = HttpClientContext.create();
@@ -47,7 +55,7 @@ public class RateLimitedHttpClient {
 
     public String execute(HttpUriRequest httpUriRequest) throws IOException {
         sleep(4000/NUM_CONTEXTS);
-        CloseableHttpResponse response = httpClient.execute(httpUriRequest, contexts.get(CURRENT_CONTEXT));
+        CloseableHttpResponse response = handleTimeoutsExecute(httpUriRequest);
         String responseString = IOUtils.toString(response.getEntity().getContent(), "UTF-8");
         MainClass.lastResponse = responseString;
         int i = 1;
@@ -62,13 +70,28 @@ public class RateLimitedHttpClient {
             }
             sleep(2000 * i);
 
-            response = httpClient.execute(httpUriRequest, contexts.get(CURRENT_CONTEXT));
+            response = handleTimeoutsExecute(httpUriRequest);
             MainClass.lastResponse = responseString;
             responseString = IOUtils.toString(response.getEntity().getContent(), "UTF-8");
             i++;
         }
         incCurrentContext();
         return responseString;
+    }
+
+    private CloseableHttpResponse handleTimeoutsExecute(HttpUriRequest httpUriRequest) throws IOException {
+        int i = 0;
+        while(i < MAX_RETRIES) {
+            try {
+                return httpClient.execute(httpUriRequest, contexts.get(CURRENT_CONTEXT));
+            } catch (IOException e) {
+                LOGGER.error(e);
+                LOGGER.error("Retrying in ten seconds...");
+                sleep(10000);
+            }
+            i++;
+        }
+        throw new IOException("Hit max retries");
     }
 
     private void sleep(int millis) {
