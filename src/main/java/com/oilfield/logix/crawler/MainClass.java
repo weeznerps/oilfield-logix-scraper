@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,9 @@ public class MainClass {
     private static String oldWellsFilePath;
     private static String siteUri;
 
+    public static String[] districts = {"01","02","03","04","05","06","6E","7B","7C","08","8A","09","10"};
+    public static String MAX_RECORDS_EXCEEDED_STRING = "records found which exceeds the maximum records allowed. Please refine your search.";
+
     public static void main(String[] args) throws IOException, InterruptedException, ParserConfigurationException, SAXException {
 
         config = new Config(args[0],args[1],args[2]);
@@ -45,6 +49,10 @@ public class MainClass {
         siteUri = args[4];
 
         wells = new ArrayList<>();
+
+        if(new File(oldWellsFilePath).exists()) {
+            populateOldWells();
+        }
         populateNewWells();
         writeCSV();
     }
@@ -189,17 +197,37 @@ public class MainClass {
     public static List<Integer> getIdList()
             throws IOException, ParserConfigurationException, SAXException {
 
+        List<Integer> ids = new ArrayList<>();
+
+        for(int i = 0; i < Duration.between(LocalDate.parse(config.getEndDate()), LocalDate.parse(config.getBeginDate())).toDays(); i++) {
+            String beginDate = LocalDate.parse(config.getBeginDate()).plusDays(i).toString().replace("-","/");
+            String endDate = LocalDate.parse(config.getEndDate()).plusDays(i).toString().replace("-", "/");
+            String responseString = getIdsResponseString(beginDate, endDate, null);
+            if(responseString.contains(MAX_RECORDS_EXCEEDED_STRING)) {
+                for(String district : districts) {
+                    ids.addAll(getIdsFromResponseString(getIdsResponseString(beginDate, endDate, district)));
+                }
+            } else {
+                ids.addAll(getIdsFromResponseString(responseString));
+            }
+        }
+        return ids;
+    }
+
+    private static String getIdsResponseString(String beginDate, String endDate, String district) throws IOException {
         URI listingUri = UriBuilder.fromUri(siteUri)
                 .path("publicSearchAction.do")
-                .queryParam("searchArgs.paramValue", "|0=" + config.getBeginDate() + "|1=" + config.getEndDate() + "|2=" + config.getDistrict())
+                .queryParam("searchArgs.paramValue", "|0=" + beginDate + "|1=" + endDate + district == null? "" : "|2=" + config.getDistrict())
                 .queryParam("pager.pageSize", "1000000")
                 .queryParam("formData.methodHndlr.inputValue","search")
                 .build();
         HttpGet httpGet = new HttpGet();
-        httpGet.setHeader("Content-Type","application/x-www-form-urlencoded");
+        httpGet.setHeader("Content-Type", "application/x-www-form-urlencoded");
         httpGet.setURI(listingUri);
-        String responseString = httpClient.execute(httpGet);
+        return httpClient.execute(httpGet);
+    }
 
+    private static List<Integer> getIdsFromResponseString(String responseString) {
         List<Integer> ids = new ArrayList<>();
 
         Document document = Jsoup.parse(responseString);
@@ -213,8 +241,6 @@ public class MainClass {
 
             }
         });
-
         return ids;
-
     }
 }

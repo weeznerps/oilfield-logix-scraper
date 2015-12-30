@@ -19,6 +19,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 public class RateLimitedHttpClient {
 
     public static String RATE_LIMIT_STRING = "You have exceeded the maximum number of queries per minute allowed for the public queries.";
+    public static String NO_RECORDS_STRING = "No 'Packet' records found";
 
     private CloseableHttpClient httpClient;
 
