@@ -8,9 +8,101 @@ package com.oilfield.logix.crawler;
 public class Well {
 
     private int id;
-    private String operaterName,fieldName,leaseName,rrcGasId,wellNumber,apiNo,rrcDistrictNo,completionType,
-        wellType,county,drillingPermitNumber,wellBoreProfile,fieldNumber,filingPurpose, submissionDate, approvalDate,
-            completionDate, w2Date, w15Date, l1HeaderDate, directionalSurveyMWDDate, directionSurveyGyroDate;
+    private String operaterName;
+    private String fieldName;
+    private String leaseName;
+    private String rrcGasId;
+    private String wellNumber;
+    private String apiNo;
+    private String rrcDistrictNo;
+    private String completionType;
+    private String wellType;
+    private String county;
+    private String drillingPermitNumber;
+    private String wellBoreProfile;
+    private String fieldNumber;
+    private String filingPurpose;
+    private String submissionDate;
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setOperaterName(String operaterName) {
+        this.operaterName = operaterName;
+    }
+
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
+    }
+
+    public void setLeaseName(String leaseName) {
+        this.leaseName = leaseName;
+    }
+
+    public void setRrcGasId(String rrcGasId) {
+        this.rrcGasId = rrcGasId;
+    }
+
+    public void setWellNumber(String wellNumber) {
+        this.wellNumber = wellNumber;
+    }
+
+    public void setApiNo(String apiNo) {
+        this.apiNo = apiNo;
+    }
+
+    public void setRrcDistrictNo(String rrcDistrictNo) {
+        this.rrcDistrictNo = rrcDistrictNo;
+    }
+
+    public void setCompletionType(String completionType) {
+        this.completionType = completionType;
+    }
+
+    public void setWellType(String wellType) {
+        this.wellType = wellType;
+    }
+
+    public void setCounty(String county) {
+        this.county = county;
+    }
+
+    public void setDrillingPermitNumber(String drillingPermitNumber) {
+        this.drillingPermitNumber = drillingPermitNumber;
+    }
+
+    public void setWellBoreProfile(String wellBoreProfile) {
+        this.wellBoreProfile = wellBoreProfile;
+    }
+
+    public void setFieldNumber(String fieldNumber) {
+        this.fieldNumber = fieldNumber;
+    }
+
+    public void setFilingPurpose(String filingPurpose) {
+        this.filingPurpose = filingPurpose;
+    }
+
+    public void setSubmissionDate(String submissionDate) {
+        this.submissionDate = submissionDate;
+    }
+
+    public void setApprovalDate(String approvalDate) {
+        this.approvalDate = approvalDate;
+    }
+
+    public void setCompletionDate(String completionDate) {
+        this.completionDate = completionDate;
+    }
+
+    private String approvalDate;
+    private String completionDate;
+    private String w2Date;
+    private String w15Date;
+    private String l1HeaderDate;
+    private String directionalSurveyMWDDate;
+    private String directionSurveyGyroDate;
 
     public Well(int id, String approvalDate, String operaterName, String completionType,
             String fieldName, String completionDate, String leaseName, String filingPurpose,

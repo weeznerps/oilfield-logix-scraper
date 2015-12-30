@@ -1,18 +1,17 @@
 package com.oilfield.logix.crawler;
 
 /**
- *
+ * Run configuration
  *
  * @author Jordan Sanderson
  */
 public class Config {
 
-    private String beginDate,endDate,district;
+    private String beginDate,endDate;
 
-    public Config(String beginDate, String endDate, String district) {
+    public Config(String beginDate, String endDate) {
         this.beginDate = beginDate;
         this.endDate = endDate;
-        this.district = district;
     }
 
 
@@ -24,7 +23,4 @@ public class Config {
         return endDate;
     }
 
-    public String getDistrict() {
-        return district;
-    }
 }
