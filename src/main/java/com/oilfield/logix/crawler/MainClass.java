@@ -41,6 +41,8 @@ public class MainClass {
 
     public static String lastResponse;
 
+    public static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+
     private static final RateLimitedHttpClient httpClient = new RateLimitedHttpClient();
     private static Config config;
     private static List<Well> wells;
@@ -164,27 +166,27 @@ public class MainClass {
                     switch(newForm) {
                         case W2:
                             if(oldWell.getW2Date().equals("null")) {
-                                oldWell.setW2Date(LocalDate.now().toString());
+                                oldWell.setW2Date(dateFormatter.format(LocalDate.now()));
                             }
                         case G2:
                             if(oldWell.getW2Date().equals("null")) {
-                                oldWell.setW2Date(LocalDate.now().toString());
+                                oldWell.setW2Date(dateFormatter.format(LocalDate.now()));
                             }
                         case W15:
-                            if(oldWell.getW2Date().equals("null")) {
-                                oldWell.setW15Date(LocalDate.now().toString());
+                            if(oldWell.getW15Date().equals("null")) {
+                                oldWell.setW15Date(dateFormatter.format(LocalDate.now()));
                             }
                         case L1HEADER:
                             if(oldWell.getL1HeaderDate().equals("null")) {
-                                oldWell.setL1HeaderDate(LocalDate.now().toString());
+                                oldWell.setL1HeaderDate(dateFormatter.format(LocalDate.now()));
                             }
                         case DIRECTIONAL_SURVEY_MWD:
                             if(oldWell.getDirectionalSurveyMWDDate().equals("null")) {
-                                oldWell.setDirectionalSurveyMWDDate(LocalDate.now().toString());
+                                oldWell.setDirectionalSurveyMWDDate(dateFormatter.format(LocalDate.now()));
                             }
                         case DIRECTIONAL_SURVEY_GYRO:
                             if(oldWell.getDirectionSurveyGyroDate().equals("null")) {
-                                oldWell.setDirectionSurveyGyroDate(LocalDate.now().toString());
+                                oldWell.setDirectionSurveyGyroDate(dateFormatter.format(LocalDate.now()));
                             }
                     }
                     if(oldWell.getApprovalDate().equals("null") && !newWell.getApprovalDate().equals("null")) {
@@ -196,17 +198,17 @@ public class MainClass {
                 for (Forms newForm : forms) {
                     switch(newForm) {
                         case W2:
-                            newWell.setW2Date(LocalDate.now().toString());
+                            newWell.setW2Date(dateFormatter.format(LocalDate.now()));
                         case G2:
-                            newWell.setW2Date(LocalDate.now().toString());
+                            newWell.setW2Date(dateFormatter.format(LocalDate.now()));
                         case W15:
-                            newWell.setW15Date(LocalDate.now().toString());
+                            newWell.setW15Date(dateFormatter.format(LocalDate.now()));
                         case L1HEADER:
-                            newWell.setL1HeaderDate(LocalDate.now().toString());
+                            newWell.setL1HeaderDate(dateFormatter.format(LocalDate.now()));
                         case DIRECTIONAL_SURVEY_MWD:
-                            newWell.setDirectionalSurveyMWDDate(LocalDate.now().toString());
+                            newWell.setDirectionalSurveyMWDDate(dateFormatter.format(LocalDate.now()));
                         case DIRECTIONAL_SURVEY_GYRO:
-                            newWell.setDirectionSurveyGyroDate(LocalDate.now().toString());
+                            newWell.setDirectionSurveyGyroDate(dateFormatter.format(LocalDate.now()));
                     }
                 }
 
@@ -232,7 +234,7 @@ public class MainClass {
             throws IOException, ParserConfigurationException, SAXException {
 
         Set<Integer> ids = new HashSet<>();
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+
 
         /**
          * Asks for all the records between two dates but does one day at a time so ass to avoid
