@@ -9,12 +9,15 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.http.client.methods.HttpGet;
+import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -34,6 +37,10 @@ import au.com.bytecode.opencsv.CSVWriter;
  */
 public class MainClass {
 
+    public static Logger LOGGER = Logger.getLogger(MainClass.class);
+
+    public static String lastResponse;
+
     private static final RateLimitedHttpClient httpClient = new RateLimitedHttpClient();
     private static Config config;
     private static List<Well> wells;
@@ -46,16 +53,25 @@ public class MainClass {
 
     public static void main(String[] args) throws IOException, InterruptedException, ParserConfigurationException, SAXException {
 
+        org.apache.log4j.BasicConfigurator.configure();
+
         config = new Config(args[0],args[1]);
         siteUri = args[2];
 
         wells = new ArrayList<>();
 
-        if(new File(oldWellsFilePath).exists()) {
-            populateOldWells();
+        try {
+            if(new File(oldWellsFilePath).exists()) {
+                populateOldWells();
+            }
+            populateNewWells();
+            writeCSV();
+        } catch(Exception e) {
+            LOGGER.error(e);
+            LOGGER.error("Last response received from server:\n" + lastResponse);
+            throw e;
         }
-        populateNewWells();
-        writeCSV();
+
     }
 
 
@@ -93,8 +109,6 @@ public class MainClass {
             httpGet.setHeader("Content-Type", "application/x-www-form-urlencoded");
             httpGet.setURI(wellUri);
             String responseString = httpClient.execute(httpGet);
-            System.out.println("****");
-            System.out.println(responseString);
             Document document = Jsoup.parse(responseString);
 
             Elements formElements = document.body().getElementsByAttributeValue("class", "DataGrid");
@@ -211,10 +225,10 @@ public class MainClass {
         }
     }
 
-    public static List<Integer> getIdList()
+    public static Set<Integer> getIdList()
             throws IOException, ParserConfigurationException, SAXException {
 
-        List<Integer> ids = new ArrayList<>();
+        Set<Integer> ids = new HashSet<>();
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
         /**
@@ -237,7 +251,6 @@ public class MainClass {
                 ids.addAll(getIdsFromResponseString(responseString));
             }
         }
-        ids.forEach(System.out::println);
         return ids;
     }
 
@@ -254,10 +267,8 @@ public class MainClass {
         return httpClient.execute(httpGet);
     }
 
-    private static List<Integer> getIdsFromResponseString(String responseString) {
-        List<Integer> ids = new ArrayList<>();
-        System.out.println("****");
-        System.out.println(responseString);
+    private static Set<Integer> getIdsFromResponseString(String responseString) {
+        Set<Integer> ids = new HashSet<>();
 
         Document document = Jsoup.parse(responseString);
         Elements elements = document.body().getElementsByAttributeValue("class", "DataGrid");
@@ -268,7 +279,7 @@ public class MainClass {
             try {
                 ids.add(Integer.valueOf(element.text().trim()));
             } catch (NumberFormatException e) {
-
+                LOGGER.warn(e);
             }
         });
         return ids;
