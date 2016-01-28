@@ -51,7 +51,7 @@ public class MainClass {
 
     public static String[] districts = {"01","02","03","04","05","06","6E","7B","7C","08","8A","09","10"};
     public static String MAX_RECORDS_EXCEEDED_STRING = "records found which exceeds the maximum records allowed. Please refine your search.";
-    public static String NO_RECORDS_STRING = "No 'Packet' records found";
+    public static String NO_RECORDS_STRING = "No &#039;Packet&#039; records found.";
 
     public static void main(String[] args) throws IOException, InterruptedException, ParserConfigurationException, SAXException {
 
