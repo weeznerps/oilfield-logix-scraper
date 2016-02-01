@@ -36,7 +36,7 @@ public class RateLimitedHttpClient {
 
     private CloseableHttpClient httpClient;
     private List<HttpClientContext> contexts;
-    private static int NUM_CONTEXTS = 3;
+    private static int NUM_CONTEXTS = 2;
     private static int CURRENT_CONTEXT = 0;
     private static int MAX_RETRIES = 15;
 
@@ -66,9 +66,13 @@ public class RateLimitedHttpClient {
                 LOGGER.warn("Session limited, switching sessions and sleeping for " + 2000 * i + " milliseconds");
                 incCurrentContext();
             } else {
-                LOGGER.warn("Rate limited, sleeping for " + 2000 * i + " milliseconds");
+                LOGGER.warn("Rate limited, sleeping for " + 2000 * (1 + i - NUM_CONTEXTS) + " milliseconds");
             }
-            sleep(2000 * i);
+
+            if(i >= NUM_CONTEXTS) {
+                LOGGER.warn("Session limited, sleeping for " + 2000 * i + " milliseconds");
+                sleep(2000 * (1 + i - NUM_CONTEXTS));
+            }
 
             response = handleTimeoutsExecute(httpUriRequest);
             MainClass.lastResponse = responseString;
@@ -84,7 +88,7 @@ public class RateLimitedHttpClient {
         while(i < MAX_RETRIES) {
             try {
                 return httpClient.execute(httpUriRequest, contexts.get(CURRENT_CONTEXT));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 LOGGER.error(e);
                 LOGGER.error("Retrying in ten seconds...");
                 sleep(10000);
@@ -104,8 +108,6 @@ public class RateLimitedHttpClient {
 
     private void incCurrentContext() {
         CURRENT_CONTEXT++;
-        if(CURRENT_CONTEXT == NUM_CONTEXTS) {
-            CURRENT_CONTEXT = 0;
-        }
+        CURRENT_CONTEXT = CURRENT_CONTEXT % NUM_CONTEXTS;
     }
 }

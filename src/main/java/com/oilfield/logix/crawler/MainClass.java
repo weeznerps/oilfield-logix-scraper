@@ -213,6 +213,7 @@ public class MainClass {
                 }
 
                 wells.add(newWell);
+                LOGGER.info("Adding well " + id);
             }
 
         }
@@ -255,6 +256,7 @@ public class MainClass {
             } else {
                 ids.addAll(getIdsFromResponseString(responseString));
             }
+            LOGGER.info("Adding ids from day " + i);
         }
         return ids;
     }
@@ -284,7 +286,6 @@ public class MainClass {
             try {
                 ids.add(Integer.valueOf(element.text().trim()));
             } catch (NumberFormatException e) {
-                LOGGER.info(e);
             }
         });
         return ids;
